@@ -1,0 +1,21 @@
+{
+  "name": "hospital-management-system",
+  "version": "1.0.0",
+  "description": "Hospital Management System - Full Stack Application",
+  "scripts": {
+    "start:user": "node user-app/server.js",
+    "start:admin": "node admin-app/server.js",
+    "start": "concurrently \"npm run start:user\" \"npm run start:admin\"",
+    "dev": "concurrently \"nodemon user-app/server.js\" \"nodemon admin-app/server.js\""
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "uuid": "^9.0.0",
+    "concurrently": "^8.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

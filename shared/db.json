@@ -1,0 +1,245 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Heena Bagwan",
+      "email": "heena@user.com",
+      "password": "1234",
+      "role": "patient",
+      "phone": "+91 98765 43210",
+      "dob": "1995-06-15",
+      "bloodGroup": "B+",
+      "address": "Mumbai, Maharashtra",
+      "avatar": null,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    }
+  ],
+  "admins": [
+    {
+      "id": "a1",
+      "name": "Dr. Admin",
+      "email": "heena@admin.com",
+      "password": "1234",
+      "role": "admin"
+    }
+  ],
+  "doctors": [
+    {
+      "id": "d1",
+      "name": "Dr. Arjun Sharma",
+      "specialization": "Cardiologist",
+      "experience": "15 Years",
+      "qualification": "MBBS, MD (Cardiology)",
+      "email": "arjun@hospital.com",
+      "phone": "+91 98001 10001",
+      "avatar": "https://ui-avatars.com/api/?name=Arjun+Sharma&background=0096c7&color=fff&size=200",
+      "availability": "Mon, Wed, Fri",
+      "timings": "9:00 AM - 5:00 PM",
+      "fee": 800,
+      "rating": 4.9,
+      "reviews": 210,
+      "available": true
+    },
+    {
+      "id": "d2",
+      "name": "Dr. Priya Mehta",
+      "specialization": "Neurologist",
+      "experience": "12 Years",
+      "qualification": "MBBS, DM (Neurology)",
+      "email": "priya@hospital.com",
+      "phone": "+91 98001 10002",
+      "avatar": "https://ui-avatars.com/api/?name=Priya+Mehta&background=2a9d8f&color=fff&size=200",
+      "availability": "Tue, Thu, Sat",
+      "timings": "10:00 AM - 4:00 PM",
+      "fee": 900,
+      "rating": 4.8,
+      "reviews": 178,
+      "available": true
+    },
+    {
+      "id": "d3",
+      "name": "Dr. Rohan Verma",
+      "specialization": "Orthopedic Surgeon",
+      "experience": "18 Years",
+      "qualification": "MBBS, MS (Ortho)",
+      "email": "rohan@hospital.com",
+      "phone": "+91 98001 10003",
+      "avatar": "https://ui-avatars.com/api/?name=Rohan+Verma&background=023e8a&color=fff&size=200",
+      "availability": "Mon, Tue, Wed",
+      "timings": "8:00 AM - 3:00 PM",
+      "fee": 1000,
+      "rating": 4.9,
+      "reviews": 342,
+      "available": true
+    },
+    {
+      "id": "d4",
+      "name": "Dr. Sneha Kapoor",
+      "specialization": "Pediatrician",
+      "experience": "10 Years",
+      "qualification": "MBBS, MD (Pediatrics)",
+      "email": "sneha@hospital.com",
+      "phone": "+91 98001 10004",
+      "avatar": "https://ui-avatars.com/api/?name=Sneha+Kapoor&background=48cae4&color=fff&size=200",
+      "availability": "Mon–Sat",
+      "timings": "9:00 AM - 6:00 PM",
+      "fee": 600,
+      "rating": 4.7,
+      "reviews": 265,
+      "available": true
+    },
+    {
+      "id": "d5",
+      "name": "Dr. Vikram Nair",
+      "specialization": "Dermatologist",
+      "experience": "8 Years",
+      "qualification": "MBBS, MD (Dermatology)",
+      "email": "vikram@hospital.com",
+      "phone": "+91 98001 10005",
+      "avatar": "https://ui-avatars.com/api/?name=Vikram+Nair&background=52b788&color=fff&size=200",
+      "availability": "Wed, Thu, Fri",
+      "timings": "11:00 AM - 5:00 PM",
+      "fee": 700,
+      "rating": 4.6,
+      "reviews": 143,
+      "available": true
+    },
+    {
+      "id": "d6",
+      "name": "Dr. Meera Pillai",
+      "specialization": "Gynecologist",
+      "experience": "14 Years",
+      "qualification": "MBBS, MS (OBG)",
+      "email": "meera@hospital.com",
+      "phone": "+91 98001 10006",
+      "avatar": "https://ui-avatars.com/api/?name=Meera+Pillai&background=e63946&color=fff&size=200",
+      "availability": "Mon, Wed, Sat",
+      "timings": "9:00 AM - 4:00 PM",
+      "fee": 850,
+      "rating": 4.9,
+      "reviews": 301,
+      "available": false
+    }
+  ],
+  "appointments": [
+    {
+      "id": "ap1",
+      "patientId": "u1",
+      "userId": "u1",
+      "patientName": "Heena Bagwan",
+      "patientEmail": "heena@user.com",
+      "doctorId": "d1",
+      "doctorName": "Dr. Arjun Sharma",
+      "specialization": "Cardiologist",
+      "date": "2026-03-10",
+      "time": "10:00 AM",
+      "reason": "Routine checkup",
+      "status": "Approved",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "ap2",
+      "patientId": "u1",
+      "userId": "u1",
+      "patientName": "Heena Bagwan",
+      "patientEmail": "heena@user.com",
+      "doctorId": "d2",
+      "doctorName": "Dr. Priya Mehta",
+      "specialization": "Neurologist",
+      "date": "2026-03-15",
+      "time": "11:00 AM",
+      "reason": "Headaches and dizziness",
+      "status": "Approved",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "ap7d5f8391",
+      "status": "Approved",
+      "createdAt": "2026-03-05T06:00:33.092Z",
+      "userId": "u1",
+      "patientId": "u1",
+      "patientName": "Heena Bagwan",
+      "patientEmail": "heena@user.com",
+      "doctorId": "d4",
+      "doctorName": "Dr. Sneha Kapoor",
+      "specialization": "Pediatrician",
+      "date": "2026-03-06",
+      "time": "9:00 AM",
+      "reason": ""
+    },
+    {
+      "id": "ap824f65c4",
+      "status": "Approved",
+      "createdAt": "2026-03-05T06:02:49.427Z",
+      "userId": "u1",
+      "patientId": "u1",
+      "patientName": "Heena Bagwan",
+      "patientEmail": "heena@user.com",
+      "doctorId": "d1",
+      "doctorName": "Dr. Arjun Sharma",
+      "specialization": "Cardiologist",
+      "date": "60306-02-02",
+      "time": "10:00 AM",
+      "reason": "Test appointment - realtime sync"
+    },
+    {
+      "id": "ap7a8af6fe",
+      "status": "Approved",
+      "createdAt": "2026-03-05T06:04:34.217Z",
+      "userId": "u1",
+      "patientId": "u1",
+      "patientName": "Heena Bagwan",
+      "patientEmail": "heena@user.com",
+      "doctorId": "d5",
+      "doctorName": "Dr. Vikram Nair",
+      "specialization": "Dermatologist",
+      "date": "2026-03-07",
+      "time": "9:00 AM",
+      "reason": ""
+    }
+  ],
+  "messages": [
+    {
+      "id": "m1",
+      "name": "Rahul Gupta",
+      "email": "rahul@example.com",
+      "subject": "Appointment Inquiry",
+      "message": "I would like to know about the OPD timings for Cardiology.",
+      "status": "read",
+      "read": true,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "m453b7512",
+      "status": "read",
+      "read": true,
+      "createdAt": "2026-03-05T06:04:08.175Z",
+      "name": "Prathamesh Giri",
+      "email": "contact@prathameshgiri.in",
+      "subject": "test",
+      "message": "test"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "rx1",
+      "patientId": "u1",
+      "doctorName": "Dr. Arjun Sharma",
+      "date": "2026-02-20",
+      "diagnosis": "Hypertension (mild)",
+      "medicines": [
+        {
+          "name": "Amlodipine 5mg",
+          "dosage": "Once daily",
+          "duration": "30 days"
+        },
+        {
+          "name": "Aspirin 75mg",
+          "dosage": "Once daily after food",
+          "duration": "30 days"
+        }
+      ],
+      "notes": "Reduce salt intake. Exercise 30 mins daily. Follow-up in 1 month."
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Prescriptions – MedCare HMS</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="authNav"></div>
+
+    <div
+        style="background:linear-gradient(135deg,var(--secondary),#1b7a6f);color:#fff;padding:calc(var(--nav-h) + 40px) 0 40px;">
+        <div class="container">
+            <div class="section-label" style="color:rgba(255,255,255,.7)">Medical Records</div>
+            <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:36px;font-weight:800;margin-bottom:8px;">My
+                Prescriptions</h1>
+            <p style="opacity:.8;font-size:16px;">View your prescribed medications and treatment plans</p>
+        </div>
+    </div>
+
+    <div class="section-sm">
+        <div class="container">
+            <div class="rx-grid" id="rxGrid">
+                <div style="text-align:center;padding:60px;color:var(--text-muted);grid-column:1/-1;">Loading…</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const user = getUser();
+        renderAuthNav('rx');
+
+        async function load() {
+            const res = await fetch(`/api/prescriptions?userId=${user.id}`);
+            const data = await res.json();
+            const list = data.prescriptions || [];
+            const grid = document.getElementById('rxGrid');
+            if (!list.length) {
+                grid.innerHTML = `<div style="text-align:center;padding:80px 20px;color:var(--text-muted);grid-column:1/-1;"><div style="font-size:52px;margin-bottom:16px;">💊</div><h3 style="color:var(--text);margin-bottom:8px;">No prescriptions yet</h3><p>Your doctor will add prescriptions after your appointment</p></div>`;
+                return;
+            }
+            grid.innerHTML = list.map(rx => `
+      <div class="rx-card">
+        <div class="rx-card-top">
+          <div class="rx-doc">👨‍⚕️ ${rx.doctorName}</div>
+          <div class="rx-date">📅 ${rx.date || rx.createdAt?.split('T')[0]}</div>
+        </div>
+        <div class="rx-card-body">
+          <div class="rx-diagnosis"><strong>Diagnosis:</strong> ${rx.diagnosis}</div>
+          <table class="rx-table">
+            <thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Duration</th></tr></thead>
+            <tbody>
+              ${(rx.medicines || []).map(m => `<tr><td><strong>${m.name}</strong></td><td>${m.dosage}</td><td>${m.frequency}</td><td>${m.duration}</td></tr>`).join('')}
+            </tbody>
+          </table>
+          ${rx.notes ? `<div class="rx-notes">📝 ${rx.notes}</div>` : ''}
+        </div>
+      </div>`).join('');
+        }
+        load();
+    </script>
+</body>
+
+</html>

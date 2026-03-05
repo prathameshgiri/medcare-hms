@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Find Doctors – MedCare HMS</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="authNav"></div>
+
+    <!-- Page Hero -->
+    <div
+        style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:calc(var(--nav-h) + 40px) 0 40px;">
+        <div class="container">
+            <div class="section-label" style="color:rgba(255,255,255,.7)">Our Team</div>
+            <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:36px;font-weight:800;margin-bottom:8px;">
+                Find Doctors</h1>
+            <p style="opacity:.8;font-size:16px;">Browse and book appointments with our top specialists</p>
+        </div>
+    </div>
+
+    <div class="section-sm">
+        <div class="container">
+            <!-- Search & Filter -->
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;align-items:center;">
+                <div style="position:relative;flex:1;min-width:240px;">
+                    <span
+                        style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;">🔍</span>
+                    <input type="text" id="search" placeholder="Search by name or specialization…"
+                        style="width:100%;padding:12px 14px 12px 44px;border:1.5px solid var(--border);border-radius:50px;font-size:14px;outline:none;font-family:inherit;transition:.2s;"
+                        oninput="filterDocs()" />
+                </div>
+                <select id="specFilter" onchange="filterDocs()"
+                    style="padding:12px 16px;border:1.5px solid var(--border);border-radius:50px;font-size:14px;outline:none;font-family:inherit;">
+                    <option value="">All Specializations</option>
+                    <option>Cardiologist</option>
+                    <option>Neurologist</option>
+                    <option>Orthopedic Surgeon</option>
+                    <option>Pediatrician</option>
+                    <option>Gynecologist</option>
+                    <option>Dermatologist</option>
+                </select>
+                <select id="availFilter" onchange="filterDocs()"
+                    style="padding:12px 16px;border:1.5px solid var(--border);border-radius:50px;font-size:14px;outline:none;font-family:inherit;">
+                    <option value="">All Availability</option>
+                    <option value="yes">Available Now</option>
+                    <option value="no">Unavailable</option>
+                </select>
+            </div>
+            <div class="doctors-grid" id="doctorsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Book Modal -->
+    <div class="modal-overlay hidden" id="bookModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="bookTitle">Book Appointment</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-form">
+                    <input type="hidden" id="bDocId" />
+                    <div>
+                        <label>Date</label>
+                        <input type="date" id="bDate" min="" />
+                    </div>
+                    <div>
+                        <label>Preferred Time</label>
+                        <select id="bTime">
+                            <option>9:00 AM</option>
+                            <option>10:00 AM</option>
+                            <option>11:00 AM</option>
+                            <option>12:00 PM</option>
+                            <option>2:00 PM</option>
+                            <option>3:00 PM</option>
+                            <option>4:00 PM</option>
+                            <option>5:00 PM</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Reason / Symptoms</label>
+                        <textarea id="bReason" rows="3" placeholder="Describe your symptoms…"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary btn-sm" onclick="book()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const user = getUser();
+        renderAuthNav('doc');
+        document.getElementById('bDate').min = new Date().toISOString().split('T')[0];
+
+        let doctors = [];
+        let selectedDoc = null;
+
+        async function loadDoctors() {
+            const res = await fetch('/api/doctors');
+            doctors = (await res.json()).doctors || [];
+            render(doctors);
+        }
+
+        const specIcons = { Cardiologist: '❤️', Neurologist: '🧠', 'Orthopedic Surgeon': '🦴', Pediatrician: '👶', Gynecologist: '🌸', Dermatologist: '🔬' };
+
+        function render(list) {
+            const g = document.getElementById('doctorsGrid');
+            if (!list.length) { g.innerHTML = '<p style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">No doctors found.</p>'; return; }
+            g.innerHTML = list.map(d => `
+      <div class="doctor-card">
+        <div class="doctor-card-top">
+          <img class="doctor-avatar" src="${d.avatar}" alt="${d.name}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(d.name)}&size=200&background=0096c7&color=fff'"/>
+          <div class="doctor-name">${d.name}</div>
+          <div class="doctor-spec">${d.specialization}</div>
+          <span class="doctor-avail ${d.available ? 'yes' : 'no'}">${d.available ? '● Available' : '● Unavailable'}</span>
+        </div>
+        <div class="doctor-card-body">
+          <div class="doctor-meta-row"><span>🎓 ${d.experience}</span><span class="doctor-rating">⭐ ${d.rating} (${d.reviews})</span></div>
+          <div class="doctor-meta-row" style="font-size:12px;"><span>📅 ${d.availability}</span><span>🕐 ${d.timings}</span></div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">🎓 ${d.qualification || 'MBBS, MD'}</div>
+          <div class="doctor-fee">₹${d.fee} <span style="font-size:13px;font-weight:400;color:var(--text-muted)">per visit</span></div>
+          ${d.available
+                    ? `<button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="openBook('${d.id}')">Book Appointment</button>`
+                    : `<button class="btn btn-outline" style="width:100%;justify-content:center;opacity:.5;cursor:not-allowed" disabled>Not Available</button>`}
+        </div>
+      </div>`).join('');
+        }
+
+        function filterDocs() {
+            const q = document.getElementById('search').value.toLowerCase();
+            const sp = document.getElementById('specFilter').value;
+            const av = document.getElementById('availFilter').value;
+            render(doctors.filter(d =>
+                (!q || d.name.toLowerCase().includes(q) || d.specialization.toLowerCase().includes(q)) &&
+                (!sp || d.specialization === sp) &&
+                (!av || (av === 'yes' ? d.available : !d.available))
+            ));
+        }
+
+        function openBook(id) {
+            selectedDoc = doctors.find(d => d.id === id);
+            document.getElementById('bookTitle').textContent = `Book with ${selectedDoc.name}`;
+            document.getElementById('bDocId').value = id;
+            document.getElementById('bookModal').classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('bookModal').classList.add('hidden'); }
+
+        async function book() {
+            const d = selectedDoc;
+            const res = await fetch('/api/appointments', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.id, patientName: user.name, patientEmail: user.email,
+                    doctorId: d.id, doctorName: d.name, specialization: d.specialization,
+                    date: document.getElementById('bDate').value, time: document.getElementById('bTime').value,
+                    reason: document.getElementById('bReason').value
+                })
+            });
+            const data = await res.json();
+            if (data.success) { closeModal(); showToast('✅ Appointment booked!'); }
+            else showToast('❌ ' + (data.message || 'Error'), 'var(--danger)');
+        }
+
+        loadDoctors();
+    </script>
+</body>
+
+</html>

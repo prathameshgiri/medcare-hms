@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Messages – MedCare HMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-logo"><svg width="30" height="30" viewBox="0 0 48 48" fill="none">
+                    <rect width="48" height="48" rx="12" fill="white" fill-opacity="0.15" />
+                    <path d="M24 10v28M10 24h28" stroke="white" stroke-width="4" stroke-linecap="round" />
+                </svg>HMS Admin</div>
+            <nav class="sidebar-nav">
+                <span class="nav-section-title">Overview</span>
+                <a href="dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>Dashboard</a>
+                <span class="nav-section-title">Management</span>
+                <a href="doctors.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                    </svg>Doctors</a>
+                <a href="appointments.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>Appointments</a>
+                <a href="patients.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>Patients</a>
+                <a href="messages.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                    </svg>Messages</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="avatar-sm" id="sidebarAvatar">A</div>
+                    <div style="flex:1;min-width:0">
+                        <div class="sidebar-user-name" id="sidebarName">Admin</div>
+                        <div class="sidebar-user-role">Administrator</div>
+                    </div>
+                    <button class="logout-btn" onclick="adminLogout()"><svg width="15" height="15" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                            <polyline points="16,17 21,12 16,7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg></button>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Messages</h1>
+                    <p>Patient inquiries and contact messages</p>
+                </div>
+                <div class="topbar-right">
+                    <span
+                        style="display:inline-flex;align-items:center;gap:7px;background:#dcfce7;color:#166534;
+                        border-radius:50px;padding:5px 14px 5px 8px;font-size:12px;font-weight:700;letter-spacing:.5px;margin-right:8px;">
+                        <span id="liveDot" style="width:8px;height:8px;border-radius:50%;background:#22c55e;
+                            box-shadow:0 0 0 3px rgba(34,197,94,.3);"></span>
+                        LIVE
+                    </span>
+                    <span id="unreadBadge" class="topbar-badge" style="background:#fee2e2;color:#991b1b;">0
+                        Unread</span>
+                    <span class="topbar-badge">🔐 Admin</span>
+                </div>
+            </header>
+            <main class="page-content">
+                <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+                    <button class="btn-primary" id="filterAll" onclick="filter('all')">All</button>
+                    <button class="btn-secondary" id="filterUnread" onclick="filter('unread')">📩 Unread</button>
+                    <button class="btn-secondary" id="filterRead" onclick="filter('read')">✅ Read</button>
+                </div>
+                <div id="msgContainer">Loading…</div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const admin = getAdmin();
+        document.getElementById('sidebarName').textContent = admin.name;
+        document.getElementById('sidebarAvatar').textContent = admin.name[0];
+
+        let messages = [];
+        let currentFilter = 'all';
+        let prevUnread = -1;
+
+        async function load() {
+            const res = await fetch('/admin/api/messages');
+            const data = await res.json();
+            messages = (data.messages || []).reverse();
+            const unread = messages.filter(m => !m.read && m.status === 'unread').length
+                || messages.filter(m => !m.read).length;
+            document.getElementById('unreadBadge').textContent = unread + ' Unread';
+            // Detect new unread messages
+            if (prevUnread >= 0 && unread > prevUnread) {
+                const n = unread - prevUnread;
+                showToast(`📨 ${n} new message${n > 1 ? 's' : ''} received!`, 'success');
+            }
+            prevUnread = unread;
+            // Flash LIVE dot
+            const dot = document.getElementById('liveDot');
+            if (dot) { dot.style.background = '#fff'; setTimeout(() => dot.style.background = '#22c55e', 300); }
+            render();
+        }
+
+        function filter(f) {
+            currentFilter = f;
+            ['filterAll', 'filterUnread', 'filterRead'].forEach(id => {
+                document.getElementById(id).className = id === 'filter' + f.charAt(0).toUpperCase() + f.slice(1) || (f === 'all' && id === 'filterAll') ? 'btn-primary' : 'btn-secondary';
+            });
+            document.getElementById('filterAll').className = f === 'all' ? 'btn-primary' : 'btn-secondary';
+            document.getElementById('filterUnread').className = f === 'unread' ? 'btn-primary' : 'btn-secondary';
+            document.getElementById('filterRead').className = f === 'read' ? 'btn-primary' : 'btn-secondary';
+            render();
+        }
+
+        function render() {
+            const el = document.getElementById('msgContainer');
+            const list = currentFilter === 'all' ? messages : messages.filter(m => m.status === currentFilter);
+            if (!list.length) { el.innerHTML = '<div class="card"><div class="card-body"><p style="color:var(--text-muted);text-align:center;padding:20px">No messages found.</p></div></div>'; return; }
+            el.innerHTML = list.map(m => `
+      <div class="msg-card ${m.status === 'unread' ? 'unread' : ''}">
+        <div class="msg-card-header">
+          <div>
+            <div class="msg-name">${m.name} <span style="font-weight:400;color:var(--text-muted);font-size:13px;">&lt;${m.email}&gt;</span></div>
+            <div class="msg-meta">${new Date(m.createdAt).toLocaleString()}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="badge ${m.status === 'unread' ? 'badge-info' : 'badge-grey'}">${m.status}</span>
+            ${m.status === 'unread' ? `<button class="btn-success" onclick="markRead('${m.id}')">Mark Read</button>` : ''}
+          </div>
+        </div>
+        <div class="msg-subject">${m.subject}</div>
+        <div class="msg-text">${m.message}</div>
+      </div>`).join('');
+        }
+
+        async function markRead(id) {
+            const res = await fetch('/admin/api/messages/' + id + '/read', { method: 'PUT' });
+            if ((await res.json()).success) { showToast('✅ Marked as read', 'success'); load(); }
+        }
+
+        load();
+        setInterval(load, 5000);
+    </script>
+</body>
+
+</html>

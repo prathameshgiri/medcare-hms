@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Admin Dashboard – MedCare HMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <style>
+        .pending-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            border-bottom: 1px solid #fef3c7;
+            transition: background .2s;
+        }
+
+        .pending-row:last-child {
+            border-bottom: none;
+        }
+
+        .pending-row:hover {
+            background: #fffbeb;
+        }
+
+        .pending-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            font-weight: 800;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .pending-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pending-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .pending-detail {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .pending-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-confirm {
+            background: #22c55e;
+            color: #fff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .2s;
+        }
+
+        .btn-confirm:hover {
+            background: #16a34a;
+            transform: scale(1.03);
+        }
+
+        .btn-reject-sm {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: .2s;
+        }
+
+        .btn-reject-sm:hover {
+            background: #fecaca;
+        }
+
+        .msg-mini {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .msg-mini:last-child {
+            border-bottom: none;
+        }
+
+        .msg-mini-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: #ede9fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .msg-mini-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .msg-mini-name {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .msg-mini-subject {
+            font-size: 12px;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .msg-mini-preview {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        @keyframes pulseDot {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 3px rgba(34, 197, 94, .3)
+            }
+
+            50% {
+                box-shadow: 0 0 0 7px rgba(34, 197, 94, .08)
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .pending-row {
+            animation: slideIn .25s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg width="30" height="30" viewBox="0 0 48 48" fill="none">
+                    <rect width="48" height="48" rx="12" fill="white" fill-opacity="0.15" />
+                    <path d="M24 10v28M10 24h28" stroke="white" stroke-width="4" stroke-linecap="round" />
+                </svg>
+                HMS Admin
+            </div>
+            <nav class="sidebar-nav">
+                <span class="nav-section-title">Overview</span>
+                <a href="dashboard.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>Dashboard</a>
+                <span class="nav-section-title">Management</span>
+                <a href="doctors.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                    </svg>Doctors</a>
+                <a href="appointments.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>Appointments
+                    <span id="navPendingBadge"
+                        style="margin-left:auto;background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:1px 7px;border-radius:20px;display:none;"></span>
+                </a>
+                <a href="patients.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>Patients</a>
+                <a href="messages.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                    </svg>Messages
+                    <span id="navMsgBadge"
+                        style="margin-left:auto;background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:1px 7px;border-radius:20px;display:none;"></span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="avatar-sm" id="sidebarAvatar">A</div>
+                    <div style="flex:1;min-width:0">
+                        <div class="sidebar-user-name" id="sidebarName">Admin</div>
+                        <div class="sidebar-user-role">Administrator</div>
+                    </div>
+                    <button class="logout-btn" onclick="adminLogout()" title="Logout"><svg width="15" height="15"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                            <polyline points="16,17 21,12 16,7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg></button>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Dashboard</h1>
+                    <p id="greet">Welcome back, Admin!</p>
+                </div>
+                <div class="topbar-right">
+                    <span
+                        style="display:inline-flex;align-items:center;gap:7px;background:#dcfce7;color:#166534;
+                        border-radius:50px;padding:5px 14px 5px 8px;font-size:12px;font-weight:700;letter-spacing:.5px;margin-right:10px;">
+                        <span id="liveDot"
+                            style="width:8px;height:8px;border-radius:50%;background:#22c55e;
+                            box-shadow:0 0 0 3px rgba(34,197,94,.3);animation:pulseDot 1.8s ease-in-out infinite;"></span>
+                        LIVE
+                    </span>
+                    <span class="topbar-badge">🔐 ADMIN</span>
+                </div>
+            </header>
+            <main class="page-content">
+
+                <!-- ── Stat Cards ──────────────────────────────────── -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                            </svg></div>
+                        <div>
+                            <div class="stat-value" id="sPatients">0</div>
+                            <div class="stat-label">Total Patients</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                            </svg></div>
+                        <div>
+                            <div class="stat-value" id="sDoctors">0</div>
+                            <div class="stat-label">Active Doctors</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg></div>
+                        <div>
+                            <div class="stat-value" id="sAppts">0</div>
+                            <div class="stat-label">Total Appointments</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;"
+                        onclick="document.getElementById('pendingCard').scrollIntoView({behavior:'smooth'})">
+                        <div class="stat-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg></div>
+                        <div>
+                            <div class="stat-value" id="sPending">0</div>
+                            <div class="stat-label">Pending Approval ↓</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="location.href='messages.html'">
+                        <div class="stat-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                            </svg></div>
+                        <div>
+                            <div class="stat-value" id="sMsgs">0</div>
+                            <div class="stat-label">Unread Messages</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Pending Approvals (ACTION REQUIRED) ──────────── -->
+                <div class="card" id="pendingCard"
+                    style="margin-bottom:24px;border:2.5px solid #f59e0b;overflow:hidden;">
+                    <div class="card-header"
+                        style="background:linear-gradient(90deg,#fffbeb,#fef9c3);padding:16px 20px;">
+                        <h3 style="display:flex;align-items:center;gap:10px;color:#78350f;font-size:16px;">
+                            <span style="background:#f59e0b;color:#fff;width:30px;height:30px;border-radius:50%;
+                                display:inline-flex;align-items:center;justify-content:center;font-size:16px;">⏳</span>
+                            Appointments Pending Your Approval
+                            <span id="pendingCount" style="background:#f59e0b;color:#fff;font-size:12px;font-weight:800;
+                                padding:3px 11px;border-radius:20px;">0</span>
+                        </h3>
+                        <a href="appointments.html" class="btn-secondary" style="font-size:12px;">Manage All →</a>
+                    </div>
+                    <div class="card-body" style="padding:0;">
+                        <div id="pendingList">
+                            <div style="text-align:center;padding:24px;color:var(--text-muted);">Loading…</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Recent Appointments + Messages ──────────────── -->
+                <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-bottom:24px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>All Recent Appointments</h3>
+                            <a href="appointments.html" class="btn-secondary">View All</a>
+                        </div>
+                        <div class="card-body" style="padding:0">
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Patient</th>
+                                            <th>Doctor</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentAppts">
+                                        <tr>
+                                            <td colspan="5"
+                                                style="text-align:center;padding:24px;color:var(--text-muted)">Loading…
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="display:flex;align-items:center;gap:8px;">
+                                📨 Unread Messages
+                                <span id="msgBadge"
+                                    style="background:#fee2e2;color:#991b1b;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;">0</span>
+                            </h3>
+                            <a href="messages.html" class="btn-secondary">View All</a>
+                        </div>
+                        <div class="card-body" style="padding:12px 16px;">
+                            <div id="recentMsgs" style="max-height:280px;overflow-y:auto;">
+                                <p style="color:var(--text-muted);font-size:14px;">Loading…</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Quick Actions ───────────────────────────────── -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap;">
+                        <a href="doctors.html" class="btn-primary">➕ Add New Doctor</a>
+                        <a href="appointments.html" class="btn-secondary"
+                            style="display:inline-flex;align-items:center;padding:10px 20px;">📋 Manage Appointments</a>
+                        <a href="messages.html" class="btn-secondary"
+                            style="display:inline-flex;align-items:center;padding:10px 20px;">📨 View Messages</a>
+                        <a href="patients.html" class="btn-secondary"
+                            style="display:inline-flex;align-items:center;padding:10px 20px;">👥 View Patients</a>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const admin = getAdmin();
+        document.getElementById('sidebarName').textContent = admin.name;
+        document.getElementById('sidebarAvatar').textContent = admin.name[0];
+        const h = new Date().getHours();
+        document.getElementById('greet').textContent =
+            (h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening') + ', ' + admin.name + '!';
+
+        let prevAppts = -1, prevMsgs = -1;
+
+        function showAdminToast(msg, color) {
+            const t = document.createElement('div');
+            t.style.cssText = `position:fixed;bottom:28px;right:28px;background:${color || '#0096c7'};
+                color:#fff;padding:13px 20px;border-radius:12px;font-weight:600;font-size:14px;
+                z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);`;
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
+        // ── Approve / Reject from dashboard ───────────────────────
+        async function dashAction(id, status) {
+            const res = await fetch('/admin/api/appointments/' + id + '/status', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showAdminToast(status === 'Approved' ? '✅ Appointment Confirmed!' : '❌ Appointment Rejected', status === 'Approved' ? '#22c55e' : '#ef4444');
+                load(true);
+            }
+        }
+
+        async function load(isFirstLoad) {
+            try {
+                const [sR, aR, mR] = await Promise.all([
+                    fetch('/admin/api/stats'),
+                    fetch('/admin/api/appointments'),
+                    fetch('/admin/api/messages')
+                ]);
+                const s = (await sR.json()).stats || {};
+                const appts = (await aR.json()).appointments || [];
+                const msgs = (await mR.json()).messages || [];
+
+                // ── Stat cards ──────────────────────────────────────
+                document.getElementById('sPatients').textContent = s.totalPatients || 0;
+                document.getElementById('sDoctors').textContent = s.activeDoctors || 0;
+                document.getElementById('sAppts').textContent = s.totalAppointments || 0;
+                document.getElementById('sPending').textContent = s.pendingAppointments || 0;
+                document.getElementById('sMsgs').textContent = s.unreadMessages || 0;
+
+                // ── Sidebar badges ──────────────────────────────────
+                const pb = document.getElementById('navPendingBadge');
+                const mb = document.getElementById('navMsgBadge');
+                const pendingCount = appts.filter(a => a.status === 'Pending').length;
+                const unreadCount = msgs.filter(m => !m.read || m.status === 'unread').length;
+                pb.textContent = pendingCount; pb.style.display = pendingCount ? '' : 'none';
+                mb.textContent = unreadCount; mb.style.display = unreadCount ? '' : 'none';
+
+                // ── Msg badge in panel header ───────────────────────
+                const msgBadge = document.getElementById('msgBadge');
+                if (msgBadge) msgBadge.textContent = unreadCount;
+
+                // ── Detect new arrivals ─────────────────────────────
+                if (!isFirstLoad) {
+                    const newA = appts.length - prevAppts;
+                    const newM = unreadCount - prevMsgs;
+                    if (newA > 0) showAdminToast(`📅 ${newA} new appointment${newA > 1 ? 's' : ''} received!`, '#0096c7');
+                    if (newM > 0) showAdminToast(`📨 ${newM} new message${newM > 1 ? 's' : ''} received!`, '#7c3aed');
+                }
+                prevAppts = appts.length;
+                prevMsgs = unreadCount;
+
+                // ── Pending Approvals card ──────────────────────────
+                const pending = appts.filter(a => a.status === 'Pending');
+                document.getElementById('pendingCount').textContent = pending.length;
+                const pCard = document.getElementById('pendingCard');
+                pCard.style.display = pending.length === 0 ? 'none' : '';
+
+                document.getElementById('pendingList').innerHTML = pending.length
+                    ? pending.reverse().map(a => `
+                        <div class="pending-row">
+                            <div class="pending-avatar">${a.patientName[0]}</div>
+                            <div class="pending-info">
+                                <div class="pending-name">📅 ${a.patientName}</div>
+                                <div class="pending-detail">
+                                    👨‍⚕️ ${a.doctorName} &nbsp;·&nbsp; 🏥 ${a.specialization}
+                                    &nbsp;·&nbsp; 🗓️ ${a.date} at ${a.time}
+                                    ${a.reason ? `&nbsp;·&nbsp; 💬 "${a.reason}"` : ''}
+                                </div>
+                            </div>
+                            <div class="pending-actions">
+                                <button class="btn-confirm" onclick="dashAction('${a.id}','Approved')">✅ Confirm</button>
+                                <button class="btn-reject-sm" onclick="dashAction('${a.id}','Rejected')">❌ Reject</button>
+                            </div>
+                        </div>`).join('')
+                    : '<div style="text-align:center;padding:20px;color:#16a34a;font-weight:600;">✅ No pending appointments — all caught up!</div>';
+
+                // ── Recent appointments table (last 6) ──────────────
+                const recent = appts.slice(-6).reverse();
+                document.getElementById('recentAppts').innerHTML = recent.length
+                    ? recent.map(x => {
+                        const sc = x.status === 'Approved' ? 'badge-success' : x.status === 'Rejected' ? 'badge-danger' : 'badge-pending';
+                        return `<tr>
+                            <td><strong>${x.patientName}</strong><br><small style="color:var(--text-muted)">${x.patientEmail || ''}</small></td>
+                            <td>${x.doctorName}<br><small style="color:var(--text-muted)">${x.specialization || ''}</small></td>
+                            <td>${x.date}<br><small style="color:var(--text-muted)">${x.time}</small></td>
+                            <td><span class="badge ${sc}">${x.status}</span></td>
+                            <td>
+                                ${x.status === 'Pending'
+                                ? `<button class="btn-confirm" style="font-size:11px;padding:5px 10px;" onclick="dashAction('${x.id}','Approved')">✅ Confirm</button>`
+                                : x.status === 'Approved'
+                                    ? `<span style="color:#16a34a;font-size:12px;font-weight:700;">Confirmed ✓</span>`
+                                    : `<span style="color:#dc2626;font-size:12px;font-weight:700;">Rejected ✗</span>`
+                            }
+                            </td>
+                        </tr>`;
+                    }).join('')
+                    : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">No appointments yet</td></tr>';
+
+                // ── Unread messages panel ───────────────────────────
+                const unread = msgs.filter(m => !m.read || m.status === 'unread').slice(0, 5);
+                document.getElementById('recentMsgs').innerHTML = unread.length
+                    ? unread.reverse().map(m => `
+                        <div class="msg-mini">
+                            <div class="msg-mini-icon">📨</div>
+                            <div class="msg-mini-body">
+                                <div class="msg-mini-name">${m.name} <small style="color:var(--text-muted);font-weight:400;">&lt;${m.email}&gt;</small></div>
+                                <div class="msg-mini-subject">${m.subject || 'General Inquiry'}</div>
+                                <div class="msg-mini-preview">${m.message ? m.message.slice(0, 80) + (m.message.length > 80 ? '…' : '') : ''}</div>
+                            </div>
+                            <div class="unread-dot"></div>
+                        </div>`).join('')
+                    : '<div style="text-align:center;padding:20px;color:#16a34a;font-weight:600;">✅ No unread messages!</div>';
+
+                // ── Flash LIVE dot ──────────────────────────────────
+                const dot = document.getElementById('liveDot');
+                if (dot) { dot.style.background = '#fff'; setTimeout(() => dot.style.background = '#22c55e', 300); }
+
+            } catch (e) { console.error('Poll error:', e); }
+        }
+
+        load(true);
+        setInterval(() => load(false), 5000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Contact Us – MedCare HMS</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="authNav"></div>
+
+    <div
+        style="background:linear-gradient(135deg,#f4a261,#e76f51);color:#fff;padding:calc(var(--nav-h) + 40px) 0 40px;">
+        <div class="container">
+            <div class="section-label" style="color:rgba(255,255,255,.7)">We're Here to Help</div>
+            <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:36px;font-weight:800;margin-bottom:8px;">
+                Contact Us</h1>
+            <p style="opacity:.8;font-size:16px;">Reach out for any questions, feedback, or support</p>
+        </div>
+    </div>
+
+    <div class="section-sm">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-form">
+                    <h3>Send a Message</h3>
+                    <div id="formSuccess" class="hidden"
+                        style="background:#d1fae5;color:#065f46;border-radius:10px;padding:14px 18px;font-size:14px;font-weight:600;margin-bottom:16px;">
+                        ✅ Your message has been sent! We'll get back to you soon.</div>
+                    <form id="contactForm">
+                        <input type="text" id="cName" placeholder="Your Name" value="" required />
+                        <input type="email" id="cEmail" placeholder="Email Address" value="" required />
+                        <input type="text" id="cSubject" placeholder="Subject (e.g., Appointment Query)" />
+                        <textarea rows="5" id="cMsg" placeholder="Write your message here…" required></textarea>
+                        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Send
+                            Message 📨</button>
+                    </form>
+                </div>
+                <div>
+                    <div class="contact-info-card">
+                        <h3>Hospital Information</h3>
+                        <div class="info-row">
+                            <div class="info-icon" style="background:#dbeafe;">📍</div>
+                            <div>
+                                <div class="info-label">Address</div>
+                                <div class="info-value">123 Medical District, Mumbai, Maharashtra – 400001</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon" style="background:#d1fae5;">📞</div>
+                            <div>
+                                <div class="info-label">Phone</div>
+                                <div class="info-value">+91 22 1234 5678</div>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon" style="background:#fef3c7;">✉️</div>
+                            <div>
+                                <div class="info-label">Email</div>
+                                <div class="info-value">info@medcarehms.com</div>
+                            </div>
+                        </div>
+                        <div class="info-row" style="margin-bottom:0">
+                            <div class="info-icon" style="background:#ede9fe;">⏰</div>
+                            <div>
+                                <div class="info-label">OPD Timings</div>
+                                <div class="info-value">Mon–Sat: 8 AM – 8 PM · Sunday: 9 AM – 2 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style="background:linear-gradient(135deg,var(--danger),#c1121f);border-radius:16px;padding:24px;color:#fff;margin-top:0;">
+                        <div style="font-size:32px;margin-bottom:10px;">🚨</div>
+                        <div style="font-size:20px;font-weight:800;margin-bottom:6px;">Emergency? Dial 102</div>
+                        <div style="opacity:.85;font-size:14px;line-height:1.6;">Our 24/7 emergency unit is always
+                            ready. For life-threatening conditions, call 102 immediately.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const user = getUser();
+        renderAuthNav('contact');
+        document.getElementById('cName').value = user.name;
+        document.getElementById('cEmail').value = user.email;
+
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const res = await fetch('/api/messages', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: document.getElementById('cName').value, email: document.getElementById('cEmail').value,
+                    subject: document.getElementById('cSubject').value || 'General',
+                    message: document.getElementById('cMsg').value
+                })
+            });
+            if ((await res.json()).success) {
+                document.getElementById('formSuccess').classList.remove('hidden');
+                e.target.reset();
+                document.getElementById('cName').value = user.name;
+                document.getElementById('cEmail').value = user.email;
+            }
+        });
+    </script>
+</body>
+
+</html>

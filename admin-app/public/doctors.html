@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Manage Doctors – MedCare HMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-logo"><svg width="30" height="30" viewBox="0 0 48 48" fill="none">
+                    <rect width="48" height="48" rx="12" fill="white" fill-opacity="0.15" />
+                    <path d="M24 10v28M10 24h28" stroke="white" stroke-width="4" stroke-linecap="round" />
+                </svg>HMS Admin</div>
+            <nav class="sidebar-nav">
+                <span class="nav-section-title">Overview</span>
+                <a href="dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>Dashboard</a>
+                <span class="nav-section-title">Management</span>
+                <a href="doctors.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                    </svg>Doctors</a>
+                <a href="appointments.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>Appointments</a>
+                <a href="patients.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>Patients</a>
+                <a href="messages.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                    </svg>Messages</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="avatar-sm" id="sidebarAvatar">A</div>
+                    <div style="flex:1;min-width:0">
+                        <div class="sidebar-user-name" id="sidebarName">Admin</div>
+                        <div class="sidebar-user-role">Administrator</div>
+                    </div>
+                    <button class="logout-btn" onclick="adminLogout()"><svg width="15" height="15" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                            <polyline points="16,17 21,12 16,7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg></button>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Manage Doctors</h1>
+                    <p>Add, edit and manage hospital doctors</p>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-primary" onclick="openAddModal()">➕ Add Doctor</button>
+                    <span class="topbar-badge">🔐 Admin</span>
+                </div>
+            </header>
+            <main class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>All Doctors (<span id="docCount">0</span>)</h3>
+                        <input type="text" id="searchInput" placeholder="Search…"
+                            style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none;width:220px;" />
+                    </div>
+                    <div class="card-body" style="padding:0">
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Doctor</th>
+                                        <th>Specialization</th>
+                                        <th>Experience</th>
+                                        <th>Fee</th>
+                                        <th>Rating</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="doctorBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay hidden" id="docModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Doctor</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId" />
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="dName"
+                            placeholder="Dr. Full Name" required /></div>
+                    <div class="form-group"><label>Specialization *</label><input type="text" id="dSpec"
+                            placeholder="e.g. Cardiologist" /></div>
+                    <div class="form-group"><label>Experience</label><input type="text" id="dExp"
+                            placeholder="e.g. 10 Years" /></div>
+                    <div class="form-group"><label>Qualification</label><input type="text" id="dQual"
+                            placeholder="MBBS, MD" /></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="dEmail"
+                            placeholder="doctor@hospital.com" /></div>
+                    <div class="form-group"><label>Phone</label><input type="text" id="dPhone"
+                            placeholder="+91 98000 00000" /></div>
+                    <div class="form-group"><label>Availability</label><input type="text" id="dAvail"
+                            placeholder="Mon, Wed, Fri" /></div>
+                    <div class="form-group"><label>Timings</label><input type="text" id="dTime"
+                            placeholder="9:00 AM – 5:00 PM" /></div>
+                    <div class="form-group"><label>Fee (₹)</label><input type="number" id="dFee" placeholder="500" />
+                    </div>
+                    <div class="form-group"><label>Rating</label><input type="number" id="dRating" step="0.1" min="1"
+                            max="5" placeholder="4.5" /></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveDoctor()">Save Doctor</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const admin = getAdmin();
+        document.getElementById('sidebarName').textContent = admin.name;
+        document.getElementById('sidebarAvatar').textContent = admin.name[0];
+
+        let doctors = [];
+
+        async function load() {
+            const res = await fetch('/admin/api/doctors');
+            const data = await res.json();
+            doctors = data.doctors || [];
+            render(doctors);
+        }
+
+        function render(list) {
+            document.getElementById('docCount').textContent = list.length;
+            const body = document.getElementById('doctorBody');
+            if (!list.length) { body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted)">No doctors found.</td></tr>'; return; }
+            body.innerHTML = list.map(d => `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img src="${d.avatar}" alt="${d.name}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(d.name)}&size=40'"/>
+            <div><div style="font-weight:600;">${d.name}</div><div style="font-size:11px;color:var(--text-muted);">${d.email || ''}</div></div>
+          </div>
+        </td>
+        <td>${d.specialization}</td>
+        <td>${d.experience}</td>
+        <td>₹${d.fee}</td>
+        <td>⭐ ${d.rating}</td>
+        <td><span class="badge ${d.available ? 'badge-success' : 'badge-danger'}">${d.available ? 'Available' : 'Unavailable'}</span></td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-success" onclick="openEdit('${d.id}')">✏️ Edit</button>
+            <button class="btn-warn" onclick="toggleAvail('${d.id}', ${d.available})">${d.available ? 'Disable' : 'Enable'}</button>
+            <button class="btn-danger" onclick="deleteDoc('${d.id}')">🗑️ Delete</button>
+          </div>
+        </td>
+      </tr>`).join('');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const q = this.value.toLowerCase();
+            render(q ? doctors.filter(d => d.name.toLowerCase().includes(q) || d.specialization.toLowerCase().includes(q)) : doctors);
+        });
+
+        function openAddModal() { document.getElementById('modalTitle').textContent = 'Add Doctor'; document.getElementById('editId').value = '';['Name', 'Spec', 'Exp', 'Qual', 'Email', 'Phone', 'Avail', 'Time', 'Fee', 'Rating'].forEach(f => document.getElementById('d' + f).value = ''); document.getElementById('docModal').classList.remove('hidden'); }
+        function openEdit(id) {
+            const d = doctors.find(x => x.id === id); if (!d) return;
+            document.getElementById('modalTitle').textContent = 'Edit Doctor';
+            document.getElementById('editId').value = id;
+            document.getElementById('dName').value = d.name;
+            document.getElementById('dSpec').value = d.specialization;
+            document.getElementById('dExp').value = d.experience;
+            document.getElementById('dQual').value = d.qualification;
+            document.getElementById('dEmail').value = d.email;
+            document.getElementById('dPhone').value = d.phone;
+            document.getElementById('dAvail').value = d.availability;
+            document.getElementById('dTime').value = d.timings;
+            document.getElementById('dFee').value = d.fee;
+            document.getElementById('dRating').value = d.rating;
+            document.getElementById('docModal').classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('docModal').classList.add('hidden'); }
+
+        async function saveDoctor() {
+            const id = document.getElementById('editId').value;
+            const body = { name: document.getElementById('dName').value, specialization: document.getElementById('dSpec').value, experience: document.getElementById('dExp').value, qualification: document.getElementById('dQual').value, email: document.getElementById('dEmail').value, phone: document.getElementById('dPhone').value, availability: document.getElementById('dAvail').value, timings: document.getElementById('dTime').value, fee: document.getElementById('dFee').value, rating: document.getElementById('dRating').value };
+            const url = id ? '/admin/api/doctors/' + id : '/admin/api/doctors';
+            const method = id ? 'PUT' : 'POST';
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await res.json();
+            if (data.success) { closeModal(); showToast(id ? '✅ Doctor updated!' : '✅ Doctor added!', 'success'); load(); }
+            else showToast('❌ ' + (data.message || 'Error'), 'danger');
+        }
+
+        async function toggleAvail(id, current) {
+            const res = await fetch('/admin/api/doctors/' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: !current }) });
+            const data = await res.json();
+            if (data.success) { showToast('Updated!', 'info'); load(); }
+        }
+
+        async function deleteDoc(id) {
+            if (!confirm('Delete this doctor?')) return;
+            const res = await fetch('/admin/api/doctors/' + id, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) { showToast('🗑️ Doctor deleted', 'danger'); load(); }
+        }
+
+        load();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Patient Login – MedCare HMS</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="login-page">
+        <!-- Left: Branding -->
+        <div class="login-left">
+            <div class="login-left-logo">
+                <div class="login-left-logo-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2v20M2 12h20" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+                    </svg>
+                </div>
+                MedCare HMS
+            </div>
+            <h1>Welcome Back to Your Health Portal</h1>
+            <p>Manage your appointments, view prescriptions, and connect with our top specialists — any time, from
+                anywhere.</p>
+            <div class="login-features">
+                <div class="login-feature">
+                    <div class="login-feature-icon">📅</div>
+                    <div class="login-feature-text">Book and manage appointments with ease</div>
+                </div>
+                <div class="login-feature">
+                    <div class="login-feature-icon">💊</div>
+                    <div class="login-feature-text">Access all your prescriptions digitally</div>
+                </div>
+                <div class="login-feature">
+                    <div class="login-feature-icon">👨‍⚕️</div>
+                    <div class="login-feature-text">50+ verified specialists across departments</div>
+                </div>
+                <div class="login-feature">
+                    <div class="login-feature-icon">🔔</div>
+                    <div class="login-feature-text">Real-time appointment status tracking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="login-right">
+            <div class="login-form-box">
+                <h2>Sign In</h2>
+                <p class="subtitle">Access your patient portal</p>
+                <div class="demo-box">
+                    <span class="demo-tag">Demo</span>
+                    heena@user.com &nbsp;/&nbsp; 1234
+                </div>
+                <form id="loginForm">
+                    <div class="form-field">
+                        <label>Email Address</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                            </svg>
+                            <input type="email" id="email" placeholder="heena@user.com" required />
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label>Password</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5 9V7a7 7 0 1114 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <input type="password" id="password" placeholder="••••••••" required />
+                        </div>
+                    </div>
+                    <div id="loginError" class="form-error hidden"></div>
+                    <button type="submit" class="form-submit" id="loginBtn">
+                        <span id="loginBtnText">Sign In</span>
+                        <span id="loginBtnSpinner" class="spinner hidden"></span>
+                    </button>
+                </form>
+                <div class="login-footer-note" style="margin-top:20px;">
+                    Admin? <a href="http://localhost:3001/admin">Go to Admin Panel →</a>
+                </div>
+                <div class="login-footer-note" style="margin-top:8px;">
+                    <a href="index.html">← Back to Website</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('hms_user')) window.location.href = '/appointments.html';
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const err = document.getElementById('loginError');
+            document.getElementById('loginBtnText').textContent = 'Signing in…';
+            document.getElementById('loginBtnSpinner').classList.remove('hidden');
+            btn.disabled = true; err.classList.add('hidden');
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: document.getElementById('email').value, password: document.getElementById('password').value })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('hms_user', JSON.stringify(data.user));
+                    localStorage.setItem('hms_token', data.token);
+                    window.location.href = '/appointments.html';
+                } else { err.textContent = data.message || 'Login failed'; err.classList.remove('hidden'); }
+            } catch { err.textContent = 'Server error. Try again.'; err.classList.remove('hidden'); }
+            finally { btn.disabled = false; document.getElementById('loginBtnText').textContent = 'Sign In'; document.getElementById('loginBtnSpinner').classList.add('hidden'); }
+        });
+    </script>
+</body>
+
+</html>

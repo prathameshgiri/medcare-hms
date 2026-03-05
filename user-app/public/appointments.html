@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>My Appointments – MedCare HMS</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ── Hero Override ──────────────────────────────────── */
+        .appts-hero {
+            position: relative;
+            padding: calc(var(--nav-h) + 56px) 0 64px;
+            background: linear-gradient(135deg, #0096c7 0%, #023e8a 45%, #2a9d8f 100%);
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        /* Decorative orbs */
+        .appts-hero::before,
+        .appts-hero::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .appts-hero::before {
+            width: 520px;
+            height: 520px;
+            top: -180px;
+            right: -120px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.10) 0%, transparent 70%);
+            animation: floatOrb 8s ease-in-out infinite;
+        }
+
+        .appts-hero::after {
+            width: 340px;
+            height: 340px;
+            bottom: -140px;
+            left: -80px;
+            background: radial-gradient(circle, rgba(42, 157, 143, 0.25) 0%, transparent 70%);
+            animation: floatOrb 11s ease-in-out infinite reverse;
+        }
+
+        .hero-orb-mid {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 38%;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatOrb 6s ease-in-out infinite 2s;
+        }
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-18px) scale(1.04);
+            }
+        }
+
+        /* Greeting pill */
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 6px 16px 6px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            margin-bottom: 20px;
+        }
+
+        .hero-pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.35);
+            animation: pulse-dot 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 3px rgba(74, 222, 128, .35);
+            }
+
+            50% {
+                box-shadow: 0 0 0 7px rgba(74, 222, 128, .12);
+            }
+        }
+
+        /* Title */
+        .hero-main-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -.02em;
+            color: #fff;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-main-title .highlight {
+            display: inline-block;
+            position: relative;
+        }
+
+        .hero-main-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4ade80, #22d3ee);
+            border-radius: 2px;
+        }
+
+        .hero-subtitle {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 16px;
+            margin-bottom: 48px;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stat Cards */
+        .hero-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 780px) {
+            .hero-stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 440px) {
+            .hero-stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .hero-stat-card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: .25s ease;
+        }
+
+        .hero-stat-card:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-3px);
+        }
+
+        .stat-icon-ring {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .stat-card-right {
+            min-width: 0;
+        }
+
+        .stat-card-num {
+            font-size: 30px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .stat-card-lbl {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: rgba(255, 255, 255, .65);
+            margin-top: 4px;
+        }
+
+        /* Bottom pulse wave */
+        .hero-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .hero-wave svg {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Auth Navbar will be injected here -->
+    <div id="authNav"></div>
+
+    <!-- Hero Banner -->
+    <div class="appts-hero">
+        <!-- Decorative mid orb -->
+        <div class="hero-orb-mid"></div>
+
+        <div class="container" style="position:relative;z-index:1">
+            <!-- Greeting Pill -->
+            <div class="hero-pill">
+                <span class="hero-pill-dot"></span>
+                Patient Portal
+            </div>
+
+            <!-- Title -->
+            <h1 class="hero-main-title">
+                <span id="greetLine">Good morning,</span><br />
+                <span class="highlight" id="greetName">My Appointments</span> 👋
+            </h1>
+            <p class="hero-subtitle">Track, manage and book appointments all in one place. Your health journey,
+                simplified.</p>
+
+            <!-- Stat Cards -->
+            <div class="hero-stats-row">
+                <!-- Total -->
+                <div class="hero-stat-card">
+                    <div class="stat-icon-ring" style="background:rgba(96,165,250,0.25);">📋</div>
+                    <div class="stat-card-right">
+                        <div class="stat-card-num" id="sTotal">–</div>
+                        <div class="stat-card-lbl">Total Visits</div>
+                    </div>
+                </div>
+                <!-- Confirmed -->
+                <div class="hero-stat-card">
+                    <div class="stat-icon-ring" style="background:rgba(74,222,128,0.25);">✅</div>
+                    <div class="stat-card-right">
+                        <div class="stat-card-num" id="sApproved">–</div>
+                        <div class="stat-card-lbl">Confirmed</div>
+                    </div>
+                </div>
+                <!-- Pending -->
+                <div class="hero-stat-card">
+                    <div class="stat-icon-ring" style="background:rgba(251,191,36,0.25);">⏳</div>
+                    <div class="stat-card-right">
+                        <div class="stat-card-num" id="sPending">–</div>
+                        <div class="stat-card-lbl">Pending</div>
+                    </div>
+                </div>
+                <!-- Prescriptions -->
+                <div class="hero-stat-card">
+                    <div class="stat-icon-ring" style="background:rgba(196,181,253,0.25);">💊</div>
+                    <div class="stat-card-right">
+                        <div class="stat-card-num" id="sRx">–</div>
+                        <div class="stat-card-lbl">Prescriptions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wave bottom -->
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 48" preserveAspectRatio="none" fill="var(--bg)">
+                <path d="M0,24 C240,52 480,0 720,24 C960,48 1200,0 1440,24 L1440,48 L0,48 Z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="section-sm">
+        <div class="container">
+            <!-- Filters + Book Button -->
+            <div
+                style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-primary btn-sm" id="fAll" onclick="filter('all')">All</button>
+                    <button class="btn btn-outline btn-sm" id="fApproved" onclick="filter('Approved')">✅
+                        Confirmed</button>
+                    <button class="btn btn-outline btn-sm" id="fPending" onclick="filter('Pending')">⏳ Pending</button>
+                    <button class="btn btn-outline btn-sm" id="fRejected" onclick="filter('Rejected')">❌
+                        Rejected</button>
+                </div>
+                <button class="btn btn-primary" onclick="openBookModal()">+ Book Appointment</button>
+            </div>
+
+            <!-- List -->
+            <div class="appts-list" id="apptsList">
+                <div style="text-align:center;padding:60px 20px;color:var(--text-muted)">Loading…</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Appointment Modal -->
+    <div class="modal-overlay hidden" id="bookModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📅 Book Appointment</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-form">
+                    <div>
+                        <label>Choose Doctor</label>
+                        <select id="bDoctor"></select>
+                    </div>
+                    <div>
+                        <label>Date</label>
+                        <input type="date" id="bDate" min="" />
+                    </div>
+                    <div>
+                        <label>Time</label>
+                        <select id="bTime">
+                            <option>9:00 AM</option>
+                            <option>10:00 AM</option>
+                            <option>11:00 AM</option>
+                            <option>12:00 PM</option>
+                            <option>2:00 PM</option>
+                            <option>3:00 PM</option>
+                            <option>4:00 PM</option>
+                            <option>5:00 PM</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Reason / Symptoms</label>
+                        <textarea id="bReason" rows="3"
+                            placeholder="Describe your symptoms or reason for visit…"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary btn-sm" onclick="bookAppointment()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const user = getUser();
+        renderAuthNav('appt');
+
+        // Set min date for booking to today
+        document.getElementById('bDate').min = new Date().toISOString().split('T')[0];
+
+        let allAppts = [], doctors = [];
+
+        async function load() {
+            const [aRes, rRes, dRes] = await Promise.all([
+                fetch(`/api/appointments?userId=${user.id}`),
+                fetch(`/api/prescriptions?userId=${user.id}`),
+                fetch('/api/doctors')
+            ]);
+            allAppts = (await aRes.json()).appointments || [];
+            const rxCount = ((await rRes.json()).prescriptions || []).length;
+            doctors = (await dRes.json()).doctors || [];
+
+            // Stats with animated count-up
+            function countUp(id, target) {
+                const el = document.getElementById(id);
+                let cur = 0;
+                const step = Math.max(1, Math.ceil(target / 20));
+                const timer = setInterval(() => {
+                    cur = Math.min(cur + step, target);
+                    el.textContent = cur;
+                    if (cur >= target) clearInterval(timer);
+                }, 40);
+            }
+            countUp('sTotal', allAppts.length);
+            countUp('sApproved', allAppts.filter(a => a.status === 'Approved').length);
+            countUp('sPending', allAppts.filter(a => a.status === 'Pending').length);
+            countUp('sRx', rxCount);
+
+            // Greet
+            const h = new Date().getHours();
+            const greet = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+            document.getElementById('greetLine').textContent = greet + ',';
+            document.getElementById('greetName').textContent = user.name.split(' ')[0];
+
+            // Doctor dropdown
+            const dSel = document.getElementById('bDoctor');
+            dSel.innerHTML = doctors.filter(d => d.available).map(d => `<option value="${d.id}">${d.name} – ${d.specialization}</option>`).join('');
+
+            renderList(allAppts);
+        }
+
+        function filter(status) {
+            ['fAll', 'fApproved', 'fPending', 'fRejected'].forEach(id => document.getElementById(id).className = 'btn btn-outline btn-sm');
+            const activeMap = { all: 'fAll', Approved: 'fApproved', Pending: 'fPending', Rejected: 'fRejected' };
+            document.getElementById(activeMap[status]).className = 'btn btn-primary btn-sm';
+            renderList(status === 'all' ? allAppts : allAppts.filter(a => a.status === status));
+        }
+
+        const specIcons = { Cardiologist: '❤️', Neurologist: '🧠', 'Orthopedic Surgeon': '🦴', Pediatrician: '👶', Gynecologist: '🌸', Dermatologist: '🔬' };
+
+        function renderList(list) {
+            const el = document.getElementById('apptsList');
+            if (!list.length) { el.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-muted);"><div style="font-size:48px;margin-bottom:16px;">📋</div><h3 style="margin-bottom:8px;color:var(--text)">No appointments found</h3><p>Book your first appointment to get started</p><button class="btn btn-primary" style="margin-top:20px" onclick="openBookModal()">+ Book Now</button></div>`; return; }
+            el.innerHTML = list.reverse().map(a => {
+                const ico = specIcons[a.specialization] || '👨‍⚕️';
+                const statusClass = a.status === 'Approved' ? 'badge-success' : a.status === 'Rejected' ? 'badge-danger' : 'badge-pending';
+                return `<div class="appt-card">
+        <div class="appt-card-left">
+          <div class="appt-avatar">${ico}</div>
+          <div>
+            <div class="appt-doctor">${a.doctorName}</div>
+            <div class="appt-meta">${a.specialization}</div>
+            ${a.reason ? `<div class="appt-meta" style="margin-top:2px;font-style:italic">"${a.reason}"</div>` : ''}
+          </div>
+        </div>
+        <div class="appt-actions">
+          <div class="appt-date-box">
+            <div class="appt-date">📅 ${a.date}</div>
+            <div class="appt-time">🕐 ${a.time}</div>
+          </div>
+          <span class="badge ${statusClass}">${a.status}</span>
+          ${a.status === 'Pending' ? `<button class="btn-danger-sm" onclick="cancel('${a.id}')">Cancel</button>` : ''}
+        </div>
+      </div>`;
+            }).join('');
+        }
+
+        async function cancel(id) {
+            if (!confirm('Cancel this appointment?')) return;
+            const res = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+            if ((await res.json()).success) { showToast('Appointment cancelled', 'var(--danger)'); load(); }
+        }
+
+        function openBookModal() { document.getElementById('bookModal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('bookModal').classList.add('hidden'); }
+
+        async function bookAppointment() {
+            const docId = document.getElementById('bDoctor').value;
+            const doc = doctors.find(d => d.id === docId);
+            const res = await fetch('/api/appointments', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.id, patientName: user.name, patientEmail: user.email,
+                    doctorId: docId, doctorName: doc.name, specialization: doc.specialization,
+                    date: document.getElementById('bDate').value, time: document.getElementById('bTime').value,
+                    reason: document.getElementById('bReason').value
+                })
+            });
+            const data = await res.json();
+            if (data.success) { closeModal(); showToast('✅ Appointment booked!'); load(); }
+            else showToast('❌ ' + (data.message || 'Error'), 'var(--danger)');
+        }
+
+        load();
+    </script>
+</body>
+
+</html>
